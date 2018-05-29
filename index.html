@@ -1,23 +1,28 @@
 <html>
 <head>
 <script>
-var req = []
+var req = [];
 function addTask(){
-    newTask = "<li>Task</li>";
-   
+    newTask = "Task <br/>";
     req.push(newTask);
-    document.getElementById("taskList").innerHTML = req;
+   
+    var result= "";
+    for(i= req.length-1; i>=0;i--){
+        result=req[i]+result;
+    }
+    document.getElementById("taskList").innerHTML = result;
     document.getElementById("numberOfTasks").innerHTML = req.length;
-}
+}    
 </script>
-
+ 
 </head>
 <body>
 <h1 id = "numberOfTasks"></h1>
-<ul style="list-style-type:square" id="taskList">
-</ul>
+<div id="taskList"></div>
 
-<button onclick="addTask()">Add Task</button> 
-
+<input type= "button" value = "Add Task" onclick="addTask()"></button> 
+    
 </body>
 </html>
+
+ 

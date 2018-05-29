@@ -36,14 +36,17 @@ function getProcessArray(num) {
 }
 
 function addTask(){
-    newTask = getTask("task");
+    newTask = "<li>Task</li>";
+   
     req.push(newTask);
+    document.getElementById("taskList").innerHTML = req;
+    document.getElementById("numberOfTasks").innerHTML = req.length;
 }
 
 arr = getProcessArray(3);
 req = []
 
-// for(var i =0;i<20;i++){
+// for(var i =0;i<20;i++)
 //     req.push(getTask(i+""))
 // }
 
@@ -52,4 +55,4 @@ req = []
 //     for(var i=1;i<arr.length;i++){
 
 //     }
-// }
+// 

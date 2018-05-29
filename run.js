@@ -4,18 +4,21 @@ function getProcess(processCapacity) {
         currentTasks: [],
         completedQueue: [],
         capacity: processCapacity,
-        pushTask: (task) =>{
-            if(currentTasks.length<processCapacity){
-                currentTasks.push(task);
+        pushTask: (task,self) =>{
+            if(self.currentTasks.length < self.capacity){
+                self.currentTasks.push(task);
             }
             else{
                 console.error("Capacity full");
             }
             
         },
-        completeTasks: (num) => {
+        completeTasks: (num,self) => {
             for(var i=0;i<num;i++){
-                completedQueue.push(currentTasks.shift())
+                if(self.currentTasks.length > 0){
+                    self.completedQueue.push(self.currentTasks.shift())
+                }
+                
             }
         }
     }
@@ -43,13 +46,21 @@ function addTask(){
 arr = getProcessArray(3);
 req = []
 
-// for(var i =0;i<20;i++){
-//     req.push(getTask(i+""))
-// }
+for(var i =0;i<20;i++){
+    req.push(getTask(i+""))
+}
 
-// function oneTimeStep(){
-//     if(arr[0].currentTasks.length < arr[0].capacity)
-//     for(var i=1;i<arr.length;i++){
+function oneTimeStep(){
+    while(arr[0].currentTasks.length < arr[0].capacity){
+        arr[0].pushTask(req.shift(),arr[0])
+    }
+    for(var i=1;i<arr.length;i++){
+        while(arr[i].currentTasks.length < arr[i].capacity && arr[i-1].completedQueue.length > 0){
+            arr[i].pushTask(arr[i-1].completedQueue.shift(),arr[i])
+        }
+    }
 
-//     }
-// }
+    for(var i=0;i<arr.length;i++){
+        arr[i].completeTasks(arr[i].capacity,arr[i])
+    }
+}

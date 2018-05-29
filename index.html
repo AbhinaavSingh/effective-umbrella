@@ -1,7 +1,23 @@
 <html>
-<head></head>
+<head>
+<script>
+var req = []
+function addTask(){
+    newTask = "<li>Task</li>";
+   
+    req.push(newTask);
+    document.getElementById("taskList").innerHTML = req;
+    document.getElementById("numberOfTasks").innerHTML = req.length;
+}
+</script>
+
+</head>
 <body>
+<h1 id = "numberOfTasks"></h1>
 <ul style="list-style-type:square" id="taskList">
 </ul>
+
+<button onclick="addTask()">Add Task</button> 
+
 </body>
 </html>

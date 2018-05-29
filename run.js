@@ -43,15 +43,8 @@ function addTask(){
     req.push(newTask);
 }
 
-arr = getProcessArray(3);
-req = []
-
-for(var i =0;i<20;i++){
-    req.push(getTask(i+""))
-}
-
 function oneTimeStep(){
-    while(arr[0].currentTasks.length < arr[0].capacity){
+    while(arr[0].currentTasks.length < arr[0].capacity && req.length > 0){
         arr[0].pushTask(req.shift(),arr[0])
     }
     for(var i=1;i<arr.length;i++){
@@ -64,3 +57,11 @@ function oneTimeStep(){
         arr[i].completeTasks(arr[i].capacity,arr[i])
     }
 }
+
+arr = getProcessArray(3);
+req = []
+
+for(var i =0;i<20;i++){
+    req.push(getTask(i+""))
+}
+

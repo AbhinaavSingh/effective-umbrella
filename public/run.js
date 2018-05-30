@@ -1,9 +1,14 @@
-function getProcess(processCapacity) {
+function addCapacityToProcess(processID, processCapacity) {
+    //capacity is units processed per unit time
+    pro[processID-1].capacity = processCapacity - 0;
+}
+
+function createProcess() {
     //capacity is units processed per unit time
     var process = {
         currentTasks: [],
         completedQueue: [],
-        capacity: processCapacity,
+        capacity: 0,
     }
     return process;
 }
@@ -19,13 +24,13 @@ function getTask(taskName) {
     return task;
 }
 
-function getProcessArray(num) {
-    var arr = []
-    for (var i = 0; i < num; i++) {
-        arr.push(getProcess(5))
-    }
-    return arr;
-}
+// function getProcessproay(num) {
+//     var pro = []
+//     for (var i = 0; i < num; i++) {
+//         pro.push(getProcess(5))
+//     }
+//     return pro;
+// }
 
 var req = []
 function addTask(){
@@ -39,10 +44,32 @@ function addTask(){
     result = "<tr><th>Tasks Queue (" +  req.length + ")</th></tr>" + result;
     document.getElementById("taskTable").innerHTML = result;
 }    
+pro = [];
+function addProcess(){
+    var process = {
+        name: "Process <br/>",
+        currentTasks: [],
+        completedQueue: [],
+        capacity: 0,
+    }
+    pro.push(process);
+    var entryProcess = document.createElement('div');
+    entryProcess.appendChild(document.createTextNode("Process" + (pro.length)));
+    var processCapacity = document.createElement("INPUT");
+    processCapacity.setAttribute("type", "text");
+    processCapacity.setAttribute("id", pro.length);
+    entryProcess.appendChild(processCapacity);
+    entryProcess.setAttribute("style","");
+    document.getElementById("processList").appendChild(entryProcess);
+    processCapacity.setAttribute("onchange", "addCapacityToProcess(this.id, this.value)");
+   // document.getElementById("numberOfProcess").innerHTML = pro.length;   
+} 
+
+
 currentTime = 0
 taskId = 0
 cycleTimeDict = {}
-arr = getProcessArray(3);
+// pro = getProcessproay(3);    
 
 
 // for(var i =0;i<20;i++)
@@ -50,43 +77,43 @@ arr = getProcessArray(3);
 // }
 
 // function oneTimeStep(){
-//     if(arr[0].currentTasks.length < arr[0].capacity)
-//     for(var i=1;i<arr.length;i++){
+//     if(pro[0].currentTasks.length < pro[0].capacity)
+//     for(var i=1;i<pro.length;i++){
 
 //     }
 // 
 //}
 
 function getCycleTime(){
-    outputQueue = arr[arr.length-1].completedQueue;
-    time = cycleTimeDict[completedQueue[completedQueue.length-1]["id"]]
+    outputQueue = pro[pro.length-1].completedQueue;
+    time = cycleTimeDict[outputQueue[outputQueue.length-1]["id"]]
     time = time[1] - time[0];
     return time 
 }
 
 function oneTimeStep(){
     currentTime = currentTime + 1;
-    for(var i=arr.length-1;i>0;i--){
-        for (var j=0;j<arr[i].capacity;j++){
-            if(arr[i-1].completedQueue.length > 0){
-                task = arr[i-1].completedQueue.shift()
+    for(var i=pro.length-1;i>0;i--){
+        for (var j=0;j<pro[i].capacity;j++){
+            if(pro[i-1].completedQueue.length > 0){
+                task = pro[i-1].completedQueue.shift()
                 cycleTimeDict[task["id"]][1] = currentTime+1;
-                arr[i].completedQueue.push(task)
+                pro[i].completedQueue.push(task)
             }
             
         }
     }
 
-    for (var i=0;i<arr[0].capacity;i++){
+    for (var i=0;i<pro[0].capacity;i++){
         if(req.length > 0){
             task = req.shift();
-            arr[0].completedQueue.push(task);
+            pro[0].completedQueue.push(task);
             cycleTimeDict[task["id"]][0] = currentTime;
         }
     }
 }
 
-arr = getProcessArray(3);
+// pro = getProcessproay(3);
 req = []
 
 // for(var i =0;i<20;i++){

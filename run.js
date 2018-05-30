@@ -4,24 +4,6 @@ function getProcess(processCapacity) {
         currentTasks: [],
         completedQueue: [],
         capacity: processCapacity,
-        pushTask: (task,self) =>{
-            // if(self.currentTasks.length < self.capacity){
-            //     self.currentTasks.push(task);
-            // }
-            // else{
-            //     console.error("Capacity full");
-            // }
-            self.completedQueue.push(task);
-            
-        },
-        // completeTasks: (num,self) => {
-        //     for(var i=0;i<num;i++){
-        //         if(self.currentTasks.length > 0){
-        //             self.completedQueue.push(self.currentTasks.shift())
-        //         }
-                
-        //     }
-        // }
     }
     return process;
 }
@@ -48,14 +30,14 @@ function oneTimeStep(){
     for(var i=arr.length-1;i>0;i--){
         for (var j=0;j<arr[i].capacity;j++){
             if(arr[i-1].completedQueue.length > 0){
-                arr[i].pushTask(arr[i-1].completedQueue.shift(),arr[i])
+                arr[i].completedQueue.push(arr[i-1].completedQueue.shift())
             }
         }
     }
 
     for (var i=0;i<arr[0].capacity;i++){
         if(req.length > 0){
-            arr[0].pushTask(req.shift(),arr[0])
+            arr[0].completedQueue.push(req.shift())
         }
     }
 }

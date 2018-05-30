@@ -27,15 +27,16 @@ function getProcessArray(num) {
     return arr;
 }
 
+var req = []
 function addTask(){
-    newTask = getTask("Task <br/>");
+    newTask = getTask("<tr><td>Task</td></tr>");
     req.push(newTask);
    
     var result= "";
     for(i= req.length-1; i>=0;i--){
         result=req[i]['name']+result;
     }
-    document.getElementById("taskList").innerHTML = result;
+    document.getElementById("taskTable").innerHTML = result;
     document.getElementById("numberOfTasks").innerHTML = req.length;
 }
 
@@ -44,7 +45,7 @@ taskId = 0
 cycleTimeDict = {}
 
 arr = getProcessArray(3);
-req = []
+
 
 // for(var i =0;i<20;i++)
 //     req.push(getTask(i+""))

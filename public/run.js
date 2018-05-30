@@ -59,6 +59,13 @@ arr = getProcessArray(3);
 // 
 //}
 
+function getCycleTime(){
+    outputQueue = arr[arr.length-1].completedQueue;
+    time = cycleTimeDict[completedQueue[completedQueue.length-1]["id"]]
+    time = time[1] - time[0];
+    return time 
+}
+
 function oneTimeStep(){
     currentTime = currentTime + 1;
     for(var i=arr.length-1;i>0;i--){
@@ -66,7 +73,7 @@ function oneTimeStep(){
             if(arr[i-1].completedQueue.length > 0){
                 task = arr[i-1].completedQueue.shift()
                 cycleTimeDict[task["id"]][1] = currentTime+1;
-                arr[i].completedQueue.push()
+                arr[i].completedQueue.push(task)
             }
             
         }

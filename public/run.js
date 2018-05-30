@@ -23,7 +23,7 @@ function getProcessArray(num) {
 
 var req = []
 function addTask(){
-    newTask = "<tr>    <td>Task</td></tr>";
+    newTask = getTask("<tr><td>Task</td></tr>");
     req.push(newTask);
    
     var result= "";

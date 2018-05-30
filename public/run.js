@@ -22,9 +22,30 @@ function getProcessArray(num) {
 }
 
 function addTask(){
-    newTask = getTask("task");
+    newTask = "Task <br/>";
     req.push(newTask);
-}
+   
+    var result= "";
+    for(i= req.length-1; i>=0;i--){
+        result=req[i]+result;
+    }
+    document.getElementById("taskList").innerHTML = result;
+    document.getElementById("numberOfTasks").innerHTML = req.length;
+}    
+arr = getProcessArray(3);
+req = []
+
+// for(var i =0;i<20;i++)
+//     req.push(getTask(i+""))
+// }
+
+// function oneTimeStep(){
+//     if(arr[0].currentTasks.length < arr[0].capacity)
+//     for(var i=1;i<arr.length;i++){
+
+//     }
+// 
+//}
 
 function oneTimeStep(){
     for(var i=arr.length-1;i>0;i--){

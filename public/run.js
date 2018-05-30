@@ -39,19 +39,20 @@ function getProcessArray(num) {
     return arr;
 }
 
+var req = []
 function addTask(){
-    newTask = "Task <br/>";
+    newTask = "<tr>    <td>Task</td></tr>";
     req.push(newTask);
    
     var result= "";
     for(i= req.length-1; i>=0;i--){
         result=req[i]+result;
     }
-    document.getElementById("taskList").innerHTML = result;
+    document.getElementById("taskTable").innerHTML = result;
     document.getElementById("numberOfTasks").innerHTML = req.length;
 }    
 arr = getProcessArray(3);
-req = []
+
 
 // for(var i =0;i<20;i++)
 //     req.push(getTask(i+""))
@@ -84,7 +85,7 @@ function oneTimeStep(){
 arr = getProcessArray(3);
 req = []
 
-for(var i =0;i<20;i++){
-    req.push(getTask(i+""))
-}
+// for(var i =0;i<20;i++){
+//     req.push(getTask(i+""))
+// }
 

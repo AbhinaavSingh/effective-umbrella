@@ -8,8 +8,14 @@ function getProcess(processCapacity) {
     return process;
 }
 
+
 function getTask(taskName) {
-    var task = { name: taskName }
+    var task = { 
+        name: taskName,
+        id:taskId 
+    }
+    cycleTimeDict[taskId] = [null,null]
+    taskId = taskId +1
     return task;
 }
 
@@ -33,6 +39,9 @@ function addTask(){
     result = "<tr><th>Tasks Queue (" +  req.length + ")</th></tr>" + result;
     document.getElementById("taskTable").innerHTML = result;
 }    
+currentTime = 0
+taskId = 0
+cycleTimeDict = {}
 arr = getProcessArray(3);
 
 
@@ -48,18 +57,31 @@ arr = getProcessArray(3);
 // 
 //}
 
+function getCycleTime(){
+    outputQueue = arr[arr.length-1].completedQueue;
+    time = cycleTimeDict[completedQueue[completedQueue.length-1]["id"]]
+    time = time[1] - time[0];
+    return time 
+}
+
 function oneTimeStep(){
+    currentTime = currentTime + 1;
     for(var i=arr.length-1;i>0;i--){
         for (var j=0;j<arr[i].capacity;j++){
             if(arr[i-1].completedQueue.length > 0){
-                arr[i].completedQueue.push(arr[i-1].completedQueue.shift())
+                task = arr[i-1].completedQueue.shift()
+                cycleTimeDict[task["id"]][1] = currentTime+1;
+                arr[i].completedQueue.push(task)
             }
+            
         }
     }
 
     for (var i=0;i<arr[0].capacity;i++){
         if(req.length > 0){
-            arr[0].completedQueue.push(req.shift())
+            task = req.shift();
+            arr[0].completedQueue.push(task);
+            cycleTimeDict[task["id"]][0] = currentTime;
         }
     }
 }

@@ -8,8 +8,14 @@ function getProcess(processCapacity) {
     return process;
 }
 
+
 function getTask(taskName) {
-    var task = { name: taskName }
+    var task = { 
+        name: taskName,
+        id:taskId 
+    }
+    cycleTimeDict[taskId] = [null,null]
+    taskId = taskId +1
     return task;
 }
 
@@ -31,7 +37,12 @@ function addTask(){
     }
     document.getElementById("taskList").innerHTML = result;
     document.getElementById("numberOfTasks").innerHTML = req.length;
-}    
+}
+
+currentTime = 0
+taskId = 0
+cycleTimeDict = {}
+
 arr = getProcessArray(3);
 req = []
 
@@ -48,17 +59,23 @@ req = []
 //}
 
 function oneTimeStep(){
+    currentTime = currentTime + 1;
     for(var i=arr.length-1;i>0;i--){
         for (var j=0;j<arr[i].capacity;j++){
             if(arr[i-1].completedQueue.length > 0){
-                arr[i].completedQueue.push(arr[i-1].completedQueue.shift())
+                task = arr[i-1].completedQueue.shift()
+                cycleTimeDict[task["id"]][1] = currentTime+1;
+                arr[i].completedQueue.push()
             }
+            
         }
     }
 
     for (var i=0;i<arr[0].capacity;i++){
         if(req.length > 0){
-            arr[0].completedQueue.push(req.shift())
+            task = req.shift();
+            arr[0].completedQueue.push(task);
+            cycleTimeDict[task["id"]][0] = currentTime;
         }
     }
 }

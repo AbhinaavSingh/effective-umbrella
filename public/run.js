@@ -61,7 +61,7 @@ arr = getProcessArray(3);
 
 function getCycleTime(){
     outputQueue = arr[arr.length-1].completedQueue;
-    time = cycleTimeDict[completedQueue[completedQueue.length-1]["id"]]
+    time = cycleTimeDict[outputQueue[outputQueue.length-1]["id"]]
     time = time[1] - time[0];
     return time 
 }

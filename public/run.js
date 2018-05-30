@@ -36,14 +36,12 @@ function addTask(){
     for(i= req.length-1; i>=0;i--){
         result=req[i]['name']+result;
     }
+    result = "<tr><th>Tasks Queue (" +  req.length + ")</th></tr>" + result;
     document.getElementById("taskTable").innerHTML = result;
-    document.getElementById("numberOfTasks").innerHTML = req.length;
-}
-
+}    
 currentTime = 0
 taskId = 0
 cycleTimeDict = {}
-
 arr = getProcessArray(3);
 
 

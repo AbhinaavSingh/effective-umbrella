@@ -2,7 +2,13 @@
 <head>
 <script src = "run.js">
 </script>
- 
+  <style>
+    .square {
+      height: 50px;
+      width: 50px;
+      background-color: #456;
+    }
+    </style>
 </head>
 <body>
 <div id="taskList"></div>
@@ -10,9 +16,16 @@
 <table id = "taskTable" style = "border: 1px solid black;">
 
 </table>
+<div id="processList">
+</div>
+
+<div id= "" style="color:blue;position:absolute;left: 0px;bottom: 0px;">
+    <input type= "button" value = "Add Task" onclick="addTask()" ></button> 
+    <input type= "button" value = "Add Process" onclick="addProcess()"></button>     
+    <div>
 
 <input type= "button" value = "Add Task" onclick="addTask()" style="color:blue;position:absolute;left: 0px;bottom: 0px;" ></button> 
-<input type= "button" value = "Execute Iteration" onclick="addTask()" style="color:blue;position:absolute; ;left: 80px;bottom: 0px;" ></button> 
+<input type= "button" value = "Execute Step" onclick="oneTimeStep()" style="color:blue;position:absolute;left: 170px;bottom: 0px;" ></button> 
     
 </body>
 </html>

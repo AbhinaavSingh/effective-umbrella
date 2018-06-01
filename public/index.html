@@ -42,21 +42,25 @@
     <div id="executionPane">
 
       <div id="processList" style="display:inline-block;"></div>
-      <div id="cycleTimeDiv" style="width:170px;border: 1px solid black;color:rgb(40, 14, 187);background-color:lightcoral;display:inline-block;"></div>
+      <div id="cycleTimeDiv" style="width:170px;color:rgb(40, 14, 187);background-color:lightcoral;display:inline-block;"></div>
       <div id="" style="color:blue;position:absolute;left: 0px;bottom: 0px;">
 
 
-        <input type="button" value="Add Task" onclick="addTask()" style="color:blue;left: 0px;bottom: 0px;">
+        
+      </div>
+      <div>
+        <div id="chartContainer" style="height: 350px; width: 40%;display:inline-block;"></div>
+        <div id="controlChart" style="height: 350px; width: 40%;display:inline-block;"></div>
+      </div>
+    </div>
+    <div style = "width:120px; max-width: 120px;">
+        <input type="button" value="Add Task" onclick="addTask()" style="color:blue;left: 0px;bottom: 0px; width : 100px;">
         </button>
-        <input type="button" value="Add Process" onclick="addProcess()" style="color:blue;left: 75px;bottom: 0px;">
+        <input type="button" value="Add Process" onclick="addProcess()" style="color:blue;left: 75px;bottom: 0px; width : 100px;">
         </button>
         <input type="button" value="Execute Step" onclick="oneTimeStep();showQueueTables();refreshTask();makeBottleneckRed();getCycleTime();"
-          style="color:blue;left: 170px;bottom: 0px;">
+          style="color:blue;left: 170px;bottom: 0px; width : 100px;">
         </button>
-      </div>
-      <div id="chartContainer" style="height: 370px; width: 80%;"></div>
-      <div id="controlChart" style="height: 370px; width: 80%;"></div>
-
     </div>
   </div>
 

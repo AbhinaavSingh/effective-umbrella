@@ -44,6 +44,52 @@ function addTask(){
     result = "<tr><th>Tasks Queue (" +  req.length + ")</th></tr>" + result;
     document.getElementById("taskTable").innerHTML = result;
 }    
+
+
+function makeBottleneckRed(){
+    var queueLength = []
+    for(i= pro.length-1; i>=0;i--){
+        queueLength[i]=pro[i].completedQueue.length;
+    }
+    queueLength.pop();  //Last Queue is Output
+    var maxlength = (queueLength.indexOf(Math.max(...queueLength))+1);
+
+    //Remove Last Red
+    for(i= pro.length-1; i>=0;i--){
+        document.getElementById("pro"+(i+1)).style="background-color:lightblue;border:solid;display:inline-block;";
+    }
+
+    //Add Red to Process with Highest Items pending in Queue
+    if (Math.max(...queueLength)>0 && (maxlength)!=pro.length){
+         document.getElementById("pro"+(maxlength+1)).style="background-color:red;border:solid;display:inline-block;";
+    }
+
+}
+
+function refreshTask(){
+    var result= "";
+    for(i= req.length-1; i>=0;i--){
+        result=req[i]['name']+result;
+    }
+    result = "<tr><th>Tasks Queue (" +  req.length + ")</th></tr>" + result;
+    document.getElementById("taskTable").innerHTML = result;
+}    
+
+function showQueueTables(){
+    for(iterateProcess= pro.length; iterateProcess>=1;iterateProcess--){
+    var result= "";
+    for(i= pro[iterateProcess-1].completedQueue.length-1; i>=0;i--){
+        result=pro[iterateProcess-1].completedQueue[i]['name']+result;
+    }
+        if (iterateProcess==pro.length){
+          result = "<tr><th>Output (" +  pro[iterateProcess-1].completedQueue.length + ")</th></tr>" + result;
+          document.getElementById("queueTable"+iterateProcess ).style="color:rgb(40, 14, 187);background-color:lightgreen;width:250px;border: 1px solid black";
+      }
+      else result = "<tr><th>Queue for Process "+(iterateProcess+1)+ " (Length = " +  pro[iterateProcess-1].completedQueue.length + ")</th></tr>" + result;
+          document.getElementById("queueTable"+iterateProcess ).innerHTML = result;
+        
+    }
+}    
 pro = [];
 function addProcess(){
     var process = {
@@ -54,14 +100,19 @@ function addProcess(){
     }
     pro.push(process);
     var entryProcess = document.createElement('div');
+    entryProcess.setAttribute("id", "pro"+pro.length);
     entryProcess.appendChild(document.createTextNode("Process" + (pro.length)));
     var processCapacity = document.createElement("INPUT");
     processCapacity.setAttribute("type", "text");
     processCapacity.setAttribute("id", pro.length);
     entryProcess.appendChild(processCapacity);
-    entryProcess.setAttribute("style","");
+    entryProcess.setAttribute("style","background-color:lightblue;border:solid;display:inline-block;");
     document.getElementById("processList").appendChild(entryProcess);
     processCapacity.setAttribute("onchange", "addCapacityToProcess(this.id, this.value)");
+    var queueTable = document.createElement("table");
+    queueTable.setAttribute("id","queueTable"+ (pro.length));
+    queueTable.setAttribute("style","border: 1px solid black;");
+    entryProcess.appendChild(queueTable);
    // document.getElementById("numberOfProcess").innerHTML = pro.length;   
 } 
 
@@ -84,12 +135,30 @@ cycleTimeDict = {}
 // 
 //}
 
+function avgTime(timeArray){
+    var total = 0;
+    for(var i = 0; i < timeArray.length; i++) {
+        total += timeArray[i];
+    }
+    return total / timeArray.length;
+    }
+
+    var timeArray = [];
 function getCycleTime(){
+    
+    var time, iterateProcess,averageTime;
     outputQueue = pro[pro.length-1].completedQueue;
+    for(iterateProcess= outputQueue.length; iterateProcess>=0;iterateProcess--){
     time = cycleTimeDict[outputQueue[outputQueue.length-1]["id"]]
     time = time[1] - time[0];
-    return time 
+    timeArray.push(time);    
+    }
+    averageTime = avgTime(timeArray);
+    if(time)
+         document.getElementById("cycleTimeDiv").innerHTML = "<b>Cycle Time</b> <br />" + averageTime; 
 }
+
+
 
 function oneTimeStep(){
     currentTime = currentTime + 1;

@@ -147,7 +147,6 @@ function addProcess(){
 currentTime = 0
 taskId = 0
 cycleTimeDict = {}
-plottedTasksCC = 0
 
 function avgTime(timeArray){
     var total = 0;
@@ -179,9 +178,14 @@ function oneTimeStep(){
       
 
     for(var i=pro.length-1;i>0;i--){
-     var lesser = Math.min(pro[i].capacity, pro[i].WIP);        
-        for (var j=0;j<lesser;j++){
-            if(pro[i-1].completedQueue.length > 0){
+    //  var lesser = Math.min(pro[i].capacity, pro[i].WIP);        
+    var nextWIP = 999999999;    
+        for (var j=0;j<pro[i].capacity;j++){
+            
+            if(i<pro.length-1){
+                nextWIP = pro[i+1].WIP;
+            }
+            if(pro[i-1].completedQueue.length > 0 && pro[i].completedQueue.length< nextWIP){
                 task = pro[i-1].completedQueue.shift()
                 cycleTimeDict[task["id"]][1] = currentTime+1;
                 pro[i].completedQueue.push(task)
@@ -189,9 +193,9 @@ function oneTimeStep(){
             
         }
     }
-
-    for (var i=0;i<Math.min(pro[0].capacity, pro[0].WIP);i++){
-        if(req.length > 0){
+    nextWIP = pro[1].WIP
+    for (var i=0;i<pro[0].capacity;i++){
+        if(req.length > 0 && pro[0].completedQueue.length< nextWIP){
             task = req.shift();
             pro[0].completedQueue.push(task);
             cycleTimeDict[task["id"]][0] = currentTime;
@@ -205,12 +209,12 @@ function oneTimeStep(){
 }
 
 function setCCData(){
-    // dataCC[0]["dataPoints"] = []
+    dataCC[0]["dataPoints"] = []
     var completedQueue = pro[pro.length-1].completedQueue;
-    for(; plottedTasksCC<completedQueue.length;plottedTasksCC++){
+    for(var i =0; i<completedQueue.length;i++){
         dataCC[0]["dataPoints"].push({
-            x:currentTime,
-            y:cycleTimeDict[completedQueue[plottedTasksCC]["id"]][1] - cycleTimeDict[completedQueue[plottedTasksCC]["id"]][0] 
+            x:completedQueue[i]["id"],
+            y:cycleTimeDict[completedQueue[i]["id"]][1] - cycleTimeDict[completedQueue[i]["id"]][0] 
         })
     }
 }

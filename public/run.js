@@ -131,7 +131,7 @@ function addProcess(){
     queueTable.setAttribute("id","queueTable"+ (pro.length));
     queueTable.setAttribute("style","border: 1px solid black;");
     entryProcess.appendChild(queueTable);
-   // document.getElementById("numberOfProcess").innerHTML = pro.length;
+    // document.getElementById("numberOfProcess").innerHTML = pro.length;
 
     var dataPoint = {
         name: "Process " + +pro.length,
@@ -147,20 +147,7 @@ function addProcess(){
 currentTime = 0
 taskId = 0
 cycleTimeDict = {}
-// pro = getProcessproay(3);    
-
-
-// for(var i =0;i<20;i++)
-//     req.push(getTask(i+""))
-// }
-
-// function oneTimeStep(){
-//     if(pro[0].currentTasks.length < pro[0].capacity)
-//     for(var i=1;i<pro.length;i++){
-
-//     }
-// 
-//}
+plottedTasksCC = 0
 
 function avgTime(timeArray){
     var total = 0;
@@ -168,7 +155,7 @@ function avgTime(timeArray){
         total += timeArray[i];
     }
     return total / timeArray.length;
-    }
+}
 
     var timeArray = [];
 function getCycleTime(){
@@ -213,6 +200,19 @@ function oneTimeStep(){
 
     setData(getPoints());
     buildChart();
+    setCCData();
+    buildCC();
+}
+
+function setCCData(){
+    // dataCC[0]["dataPoints"] = []
+    var completedQueue = pro[pro.length-1].completedQueue;
+    for(; plottedTasksCC<completedQueue.length;plottedTasksCC++){
+        dataCC[0]["dataPoints"].push({
+            x:currentTime,
+            y:cycleTimeDict[completedQueue[plottedTasksCC]["id"]][1] - cycleTimeDict[completedQueue[plottedTasksCC]["id"]][0] 
+        })
+    }
 }
 
 function setData(points){
@@ -247,9 +247,16 @@ data = [
         ]
     }
 ]
-// for(var i =0;i<20;i++){
-//     req.push(getTask(i+""))
-// }
+dataCC = [
+    {
+        // name: "Requirements",
+        type: "spline",
+        // showInLegend: true,
+        dataPoints: [
+        ]
+    }
+] 
+
 function buildChart(){
     var chart = new CanvasJS.Chart("chartContainer", {
         animationEnabled: true,
@@ -277,6 +284,32 @@ function buildChart(){
     chart.render();
 }
 
+function buildCC(){
+    var chart = new CanvasJS.Chart("controlChart", {
+        animationEnabled: true,
+        title:{
+            text: "Control Chart"
+        },
+        axisX: {
+            // valueFormatString: "DD MMM,YY"
+        },
+        axisY: {
+            title: "Cycle time",
+            includeZero: true,
+            // suffix: " °C"
+        },
+        legend:{
+            cursor: "pointer",
+            fontSize: 16,
+            itemclick: toggleDataSeries
+        },
+        toolTip:{
+            shared: true
+        },
+        data:dataCC
+    });
+    chart.render();
+}
 
 function toggleDataSeries(e){
 	if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {

@@ -39,6 +39,8 @@ function getTask(taskName) {
 // }
 
 var req = []
+datapoints = []
+
 function addTask(){
     newTask = getTask("<tr><td>Task</td></tr>");
     req.push(newTask);
@@ -129,7 +131,16 @@ function addProcess(){
     queueTable.setAttribute("id","queueTable"+ (pro.length));
     queueTable.setAttribute("style","border: 1px solid black;");
     entryProcess.appendChild(queueTable);
-   // document.getElementById("numberOfProcess").innerHTML = pro.length;   
+   // document.getElementById("numberOfProcess").innerHTML = pro.length;
+
+    var dataPoint = {
+        name: "Process",
+        type: "spline",
+        showInLegend: true,
+        dataPoints: [
+        ]
+    }
+    data.push(dataPoint)
 } 
 
 
@@ -164,7 +175,7 @@ function getCycleTime(){
     
     var time, iterateProcess,averageTime;
     outputQueue = pro[pro.length-1].completedQueue;
-    for(iterateProcess= outputQueue.length; iterateProcess>=0;iterateProcess--){
+    for(iterateProcess= outputQueue.length; iterateProcess>0;iterateProcess--){
     time = cycleTimeDict[outputQueue[outputQueue.length-1]["id"]]
     time = time[1] - time[0];
     timeArray.push(time);    
@@ -199,12 +210,80 @@ function oneTimeStep(){
             cycleTimeDict[task["id"]][0] = currentTime;
         }
     }
+
+    setData(getPoints());
+    buildChart();
+}
+
+function setData(points){
+    for(var i=0 ; i<points.length;i++){
+        data[i]["dataPoints"].push({
+            x:currentTime,
+            y:points[i]
+        })
+    }
+}
+
+function getPoints(){
+    var points = []
+    var tot = 0;
+    for(var i=pro.length-1;i>=0;i--){
+        tot = tot + pro[i].completedQueue.length
+        points.push(tot);
+    }
+    tot = tot + req.length
+    points.push(tot);
+    return points.reverse();
 }
 
 // pro = getProcessproay(3);
 req = []
-
+data = [
+    {
+        name: "Requirements",
+        type: "spline",
+        showInLegend: true,
+        dataPoints: [
+        ]
+    }
+]
 // for(var i =0;i<20;i++){
 //     req.push(getTask(i+""))
 // }
+function buildChart(){
+    var chart = new CanvasJS.Chart("chartContainer", {
+        animationEnabled: true,
+        title:{
+            text: "CFD"
+        },
+        axisX: {
+            // valueFormatString: "DD MMM,YY"
+        },
+        axisY: {
+            title: "Work done ",
+            includeZero: true,
+            // suffix: " °C"
+        },
+        legend:{
+            cursor: "pointer",
+            fontSize: 16,
+            itemclick: toggleDataSeries
+        },
+        toolTip:{
+            shared: true
+        },
+        data:data
+    });
+    chart.render();
+}
 
+
+function toggleDataSeries(e){
+	if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+		e.dataSeries.visible = false;
+	}
+	else{
+		e.dataSeries.visible = true;
+	}
+	chart.render();
+}

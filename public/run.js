@@ -3,12 +3,18 @@ function addCapacityToProcess(processID, processCapacity) {
     pro[processID-1].capacity = processCapacity - 0;
 }
 
+function addWIPToProcess(wipID, processWIP) {
+    //capacity is units processed per unit time
+    var processID = wipID.substring(3) - 0;
+    pro[processID-1].WIP = processWIP - 0;
+}
+
 function createProcess() {
     //capacity is units processed per unit time
     var process = {
         currentTasks: [],
         completedQueue: [],
-        capacity: 0,
+        capacity: -1,
     }
     return process;
 }
@@ -98,19 +104,29 @@ function addProcess(){
         name: "Process <br/>",
         currentTasks: [],
         completedQueue: [],
-        capacity: 0,
+        capacity: 1000000000,
+        WIP: 1000000000
     }
     pro.push(process);
     var entryProcess = document.createElement('div');
     entryProcess.setAttribute("id", "pro"+pro.length);
     entryProcess.appendChild(document.createTextNode("Process" + (pro.length)));
+    var processWIP = document.createElement("INPUT");
+    processWIP.setAttribute("type", "text");
+    processWIP.setAttribute("id", "WIP" + pro.length);
     var processCapacity = document.createElement("INPUT");
     processCapacity.setAttribute("type", "text");
     processCapacity.setAttribute("id", pro.length);
+    processCapacity.setAttribute("placeholder",  "Capacity")
+    processCapacity.setAttribute("style", "width : 60px");
+    entryProcess.appendChild(processWIP);
     entryProcess.appendChild(processCapacity);
     entryProcess.setAttribute("style","background-color:lightblue;border:solid;display:inline-block;");
     document.getElementById("processList").appendChild(entryProcess);
     processCapacity.setAttribute("onchange", "addCapacityToProcess(this.id, this.value)");
+    processWIP.setAttribute("onchange", "addWIPToProcess(this.id, this.value)");    
+    processWIP.setAttribute("placeholder",  "WIP");    
+    processWIP.setAttribute("style", "width : 60px");    
     var queueTable = document.createElement("table");
     queueTable.setAttribute("id","queueTable"+ (pro.length));
     queueTable.setAttribute("style","border: 1px solid black;");
@@ -153,15 +169,18 @@ function getCycleTime(){
     }
     averageTime = avgTime(timeArray);
     if(time)
-         document.getElementById("cycleTimeDiv").innerHTML = "<b>Cycle Time</b> <br />" + averageTime; 
+         document.getElementById("cycleTimeDiv").innerHTML = "<b>Average Cycle Time</b> <br />" + averageTime; 
 }
 
 
 
 function oneTimeStep(){
     currentTime = currentTime + 1;
+      
+
     for(var i=pro.length-1;i>0;i--){
-        for (var j=0;j<pro[i].capacity;j++){
+     var lesser = Math.min(pro[i].capacity, pro[i].WIP);        
+        for (var j=0;j<lesser;j++){
             if(pro[i-1].completedQueue.length > 0){
                 task = pro[i-1].completedQueue.shift()
                 cycleTimeDict[task["id"]][1] = currentTime+1;
@@ -171,7 +190,7 @@ function oneTimeStep(){
         }
     }
 
-    for (var i=0;i<pro[0].capacity;i++){
+    for (var i=0;i<Math.min(pro[0].capacity, pro[0].WIP);i++){
         if(req.length > 0){
             task = req.shift();
             pro[0].completedQueue.push(task);

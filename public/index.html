@@ -1,4 +1,5 @@
 <html>
+
 <head>
   <style>
     .square {
@@ -6,29 +7,59 @@
       width: 50px;
       background-color: #456;
     }
-    </style>
+
+    table:empty {
+      display: none;
+    }
+
+    #main {
+      display: table;
+      width: 100%;
+    }
+
+    #taskList,
+    #executionPane {
+      display: table-cell;
+      padding: 2px 6px;
+    }
+
+    #taskList {
+      white-space: nowrap;
+      width: 400px;
+    }
+
+    #executionPane {
+      width: 100%;
+    }
+  </style>
 </head>
+
 <body>
-<div id="taskList"></div>
+  <div id="main">
+    <div id="taskList">
+      <table id="taskTable" style="border: 1px solid black;background-color:lightcoral;overflow: hidden;width:120px;color:rgb(40, 14, 187);"></table>
+    </div>
+    <div id="executionPane">
 
-<table id = "taskTable" style = "border: 1px solid black;">
-
-</table>
-<div id="processList">
-</div>
-
-<div id= "" style="color:blue;position:absolute;left: 0px;bottom: 0px;">
-    <input type= "button" value = "Add Task" onclick="addTask()" ></button> 
-    <input type= "button" value = "Add Process" onclick="addProcess()"></button>
-    <input type= "button" value = "Execute Step" onclick="oneTimeStep()"></button>
-
-    <div>
+      <div id="processList" style="display:inline-block;"></div>
+      <div id="cycleTimeDiv" style="width:170px;border: 1px solid black;color:rgb(40, 14, 187);background-color:lightcoral;display:inline-block;"></div>
+      <div id="" style="color:blue;position:absolute;left: 0px;bottom: 0px;">
 
 
-<div id="chartContainer" style="height: 370px; width: 250%;"></div>
+        <input type="button" value="Add Task" onclick="addTask()" style="color:blue;position:absolute;left: 0px;bottom: 0px;">
+        </button>
+        <input type="button" value="Add Process" onclick="addProcess()" style="color:blue;position:absolute;left: 75px;bottom: 0px;">
+        </button>
+        <input type="button" value="Execute Step" onclick="oneTimeStep();showQueueTables();refreshTask();makeBottleneckRed();getCycleTime();"
+          style="color:blue;position:absolute;left: 170px;bottom: 0px;">
+        </button>
+      </div>
+      <div id="chartContainer" style="height: 370px; width: 80%;"></div>
+    </div>
+  </div>
 
 </body>
+
 </html>
-<script src = "https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-<script src = "run.js">  </script>
- 
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="run.js">  </script>

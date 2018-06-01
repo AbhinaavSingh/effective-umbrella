@@ -46,6 +46,52 @@ function addTask(){
     result = "<tr><th>Tasks Queue (" +  req.length + ")</th></tr>" + result;
     document.getElementById("taskTable").innerHTML = result;
 }    
+
+
+function makeBottleneckRed(){
+    var queueLength = []
+    for(i= pro.length-1; i>=0;i--){
+        queueLength[i]=pro[i].completedQueue.length;
+    }
+    queueLength.pop();  //Last Queue is Output
+    var maxlength = (queueLength.indexOf(Math.max(...queueLength))+1);
+
+    //Remove Last Red
+    for(i= pro.length-1; i>=0;i--){
+        document.getElementById("pro"+(i+1)).style="background-color:lightblue;border:solid;display:inline-block;";
+    }
+
+    //Add Red to Process with Highest Items pending in Queue
+    if (Math.max(...queueLength)>0 && (maxlength)!=pro.length){
+         document.getElementById("pro"+(maxlength+1)).style="background-color:red;border:solid;display:inline-block;";
+    }
+
+}
+
+function refreshTask(){
+    var result= "";
+    for(i= req.length-1; i>=0;i--){
+        result=req[i]['name']+result;
+    }
+    result = "<tr><th>Tasks Queue (" +  req.length + ")</th></tr>" + result;
+    document.getElementById("taskTable").innerHTML = result;
+}    
+
+function showQueueTables(){
+    for(iterateProcess= pro.length; iterateProcess>=1;iterateProcess--){
+    var result= "";
+    for(i= pro[iterateProcess-1].completedQueue.length-1; i>=0;i--){
+        result=pro[iterateProcess-1].completedQueue[i]['name']+result;
+    }
+        if (iterateProcess==pro.length){
+          result = "<tr><th>Output (" +  pro[iterateProcess-1].completedQueue.length + ")</th></tr>" + result;
+          document.getElementById("queueTable"+iterateProcess ).style="color:rgb(40, 14, 187);background-color:lightgreen;width:250px;border: 1px solid black";
+      }
+      else result = "<tr><th>Queue for Process "+(iterateProcess+1)+ " (Length = " +  pro[iterateProcess-1].completedQueue.length + ")</th></tr>" + result;
+          document.getElementById("queueTable"+iterateProcess ).innerHTML = result;
+        
+    }
+}    
 pro = [];
 function addProcess(){
     var process = {
@@ -56,14 +102,19 @@ function addProcess(){
     }
     pro.push(process);
     var entryProcess = document.createElement('div');
+    entryProcess.setAttribute("id", "pro"+pro.length);
     entryProcess.appendChild(document.createTextNode("Process" + (pro.length)));
     var processCapacity = document.createElement("INPUT");
     processCapacity.setAttribute("type", "text");
     processCapacity.setAttribute("id", pro.length);
     entryProcess.appendChild(processCapacity);
-    entryProcess.setAttribute("style","");
+    entryProcess.setAttribute("style","background-color:lightblue;border:solid;display:inline-block;");
     document.getElementById("processList").appendChild(entryProcess);
     processCapacity.setAttribute("onchange", "addCapacityToProcess(this.id, this.value)");
+    var queueTable = document.createElement("table");
+    queueTable.setAttribute("id","queueTable"+ (pro.length));
+    queueTable.setAttribute("style","border: 1px solid black;");
+    entryProcess.appendChild(queueTable);
    // document.getElementById("numberOfProcess").innerHTML = pro.length;
 
     var dataPoint = {
@@ -71,7 +122,6 @@ function addProcess(){
         type: "spline",
         showInLegend: true,
         dataPoints: [
-            // { x: 0, y: 31 }
         ]
     }
     data.push(dataPoint)
@@ -96,12 +146,30 @@ cycleTimeDict = {}
 // 
 //}
 
+function avgTime(timeArray){
+    var total = 0;
+    for(var i = 0; i < timeArray.length; i++) {
+        total += timeArray[i];
+    }
+    return total / timeArray.length;
+    }
+
+    var timeArray = [];
 function getCycleTime(){
+    
+    var time, iterateProcess,averageTime;
     outputQueue = pro[pro.length-1].completedQueue;
+    for(iterateProcess= outputQueue.length; iterateProcess>0;iterateProcess--){
     time = cycleTimeDict[outputQueue[outputQueue.length-1]["id"]]
     time = time[1] - time[0];
-    return time 
+    timeArray.push(time);    
+    }
+    averageTime = avgTime(timeArray);
+    if(time)
+         document.getElementById("cycleTimeDiv").innerHTML = "<b>Cycle Time</b> <br />" + averageTime; 
 }
+
+
 
 function oneTimeStep(){
     currentTime = currentTime + 1;
@@ -140,16 +208,26 @@ function setData(points){
 function getPoints(){
     var points = []
     var tot = 0;
-    for(var i=pro.length-1;i>=0;i++){
+    for(var i=pro.length-1;i>=0;i--){
         tot = tot + pro[i].completedQueue.length
         points.push(tot);
     }
-    return points;
+    tot = tot + req.length
+    points.push(tot);
+    return points.reverse();
 }
 
 // pro = getProcessproay(3);
 req = []
-data = []
+data = [
+    {
+        name: "Requirements",
+        type: "spline",
+        showInLegend: true,
+        dataPoints: [
+        ]
+    }
+]
 // for(var i =0;i<20;i++){
 //     req.push(getTask(i+""))
 // }
@@ -157,15 +235,15 @@ function buildChart(){
     var chart = new CanvasJS.Chart("chartContainer", {
         animationEnabled: true,
         title:{
-            text: "Daily High Temperature at Different Beaches"
+            text: "CFD"
         },
         axisX: {
-            valueFormatString: "DD MMM,YY"
+            // valueFormatString: "DD MMM,YY"
         },
         axisY: {
-            title: "Temperature (in °C)",
-            includeZero: false,
-            suffix: " °C"
+            title: "Work done ",
+            includeZero: true,
+            // suffix: " °C"
         },
         legend:{
             cursor: "pointer",
@@ -175,51 +253,7 @@ function buildChart(){
         toolTip:{
             shared: true
         },
-        data:[]
-        // data: [{
-        //     name: "Myrtle Beach",
-        //     type: "spline",
-        //     showInLegend: true,
-        //     dataPoints: [
-        //         { x: new Date(2017,6,24), y: 31 },
-        //         { x: new Date(2017,6,25), y: 31 },
-        //         { x: new Date(2017,6,26), y: 29 },
-        //         { x: new Date(2017,6,27), y: 29 },
-        //         { x: new Date(2017,6,28), y: 31 },
-        //         { x: new Date(2017,6,29), y: 30 },
-        //         { x: new Date(2017,6,30), y: 29 }
-        //     ]
-        // },
-        // {
-        //     name: "Martha Vineyard",
-        //     type: "spline",
-        //     yValueFormatString: "#0.## °C",
-        //     showInLegend: true,
-        //     dataPoints: [
-        //         { x: new Date(2017,6,24), y: 20 },
-        //         { x: new Date(2017,6,25), y: 20 },
-        //         { x: new Date(2017,6,26), y: 25 },
-        //         { x: new Date(2017,6,27), y: 25 },
-        //         { x: new Date(2017,6,28), y: 25 },
-        //         { x: new Date(2017,6,29), y: 25 },
-        //         { x: new Date(2017,6,30), y: 25 }
-        //     ]
-        // },
-        // {
-        //     name: "Nantucket",
-        //     type: "spline",
-        //     yValueFormatString: "#0.## °C",
-        //     showInLegend: true,
-        //     dataPoints: [
-        //         { x: new Date(2017,6,24), y: 22 },
-        //         { x: new Date(2017,6,25), y: 19 },
-        //         { x: new Date(2017,6,26), y: 23 },
-        //         { x: new Date(2017,6,27), y: 24 },
-        //         { x: new Date(2017,6,28), y: 24 },
-        //         { x: new Date(2017,6,29), y: 23 },
-        //         { x: new Date(2017,6,30), y: 23 }
-        //     ]
-        // }]
+        data:data
     });
     chart.render();
 }

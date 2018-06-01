@@ -49,7 +49,7 @@ function addTask(){
     for(i= req.length-1; i>=0;i--){
         result=req[i]['name']+result;
     }
-    result = "<tr><th>Tasks Queue (" +  req.length + ")</th></tr>" + result;
+    result = "<tr><th>Requirements(" +  req.length + ")</th></tr>" + result;
     document.getElementById("taskTable").innerHTML = result;
 }    
 
@@ -79,7 +79,7 @@ function refreshTask(){
     for(i= req.length-1; i>=0;i--){
         result=req[i]['name']+result;
     }
-    result = "<tr><th>Tasks Queue (" +  req.length + ")</th></tr>" + result;
+    result = "<tr><th>Requirements (" +  req.length + ")</th></tr>" + result;
     document.getElementById("taskTable").innerHTML = result;
 }    
 
@@ -110,7 +110,7 @@ function addProcess(){
     pro.push(process);
     var entryProcess = document.createElement('div');
     entryProcess.setAttribute("id", "pro"+pro.length);
-    entryProcess.appendChild(document.createTextNode("Process" + (pro.length)));
+    entryProcess.appendChild(document.createTextNode("Process " + (pro.length)));
     var processWIP = document.createElement("INPUT");
     processWIP.setAttribute("type", "text");
     processWIP.setAttribute("id", "WIP" + pro.length);
@@ -134,7 +134,7 @@ function addProcess(){
    // document.getElementById("numberOfProcess").innerHTML = pro.length;
 
     var dataPoint = {
-        name: "Process",
+        name: "Process " + +pro.length,
         type: "spline",
         showInLegend: true,
         dataPoints: [
